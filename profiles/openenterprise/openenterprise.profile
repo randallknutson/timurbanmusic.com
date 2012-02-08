@@ -57,27 +57,38 @@ function openenterprise_form_install_configure_form_alter(&$form, &$form_state) 
 }
 
 /**
- * Set Open Enterprise as default install profile.
- *
- * Must use system as the hook module because openenterprise is not active yet
- */
-function system_form_install_select_profile_form_alter(&$form, $form_state) {
-  // Hide default drupal profiles
-  unset($form['profile']['Minimal']);
-  unset($form['profile']['Standard']);
-  foreach($form['profile'] as $key => $element) {
-    $form['profile'][$key]['#value'] = 'openenterprise';
-  }
-}
-
-/**
  * Implements hook_install_tasks
  */
 function openenterprise_install_tasks($install_state) {
   $tasks = array();
   require_once(drupal_get_path('module', 'apps') . '/apps.profile.inc');
-  $tasks = $tasks + apps_profile_install_tasks($install_state, 'levelten', array('enterprise_rotator', 'enterprise_blog'));
+  $server = array(
+    'machine name' => 'levelten',
+    'default apps' => array(
+      'enterprise_rotator',
+      'enterprise_blog',
+    ),
+    'required apps' => array(
+
+    ),
+    'default content callback' => 'openenterprise_default_content',
+  );
+  $tasks = $tasks + apps_profile_install_tasks($install_state, $server);
   return $tasks;
+}
+
+/**
+ * Apps installer default content callback.
+ */
+function openenterprise_default_content(&$modules) {
+  $modules[] = 'enterprise_content';
+  $files = system_rebuild_module_data();
+  foreach($modules as $module) {
+    // Should probably check the app to see the proper way to do this.
+    if (isset($files[$module . '_content'])) {
+      $modules[] = $module . '_content';
+    }
+  }
 }
 
 /**
@@ -93,12 +104,14 @@ function openenterprise_form_apps_profile_apps_select_form_alter(&$form, $form_s
  * Submit callback for apps_profile_apps_select_form
  */
 function openenterprise_apps_profile_apps_select_form_submit($form, $form_state) {
-  $apps = array_filter($form_state['values']['apps']);
-  $_SESSION['openenterprise_apps_installed'] = FALSE;
-  if (!empty($apps)) {
-    $_SESSION['openenterprise_apps_installed'] = TRUE;
+  if ($form_state['values']['op'] == t('Install Apps') && isset($form_state['values']['apps']) && !empty($form_state['values']['apps'])) {
+    $apps = array_filter($form_state['values']['apps']);
+    $_SESSION['openenterprise_apps_installed'] = FALSE;
+    if (!empty($apps)) {
+      $_SESSION['openenterprise_apps_installed'] = TRUE;
+    }
+    $_SESSION['openenterprise_apps_default_content'] = $form_state['values']['default_content'];
   }
-  $_SESSION['openenterprise_apps_default_content'] = $form_state['values']['default_content'];
 }
 
 /**
@@ -119,7 +132,7 @@ function openenterprise_install_tasks_alter(&$tasks, $install_state) {
  */
 function openenterprise_install_finished(&$install_state) {
   drupal_set_title(st('@drupal installation complete', array('@drupal' => drupal_install_profile_distribution_name())), PASS_THROUGH);
-  if (!$_SESSION['openenterprise_apps_installed']) {
+  if (!isset($_SESSION['openenterprise_apps_installed']) || !$_SESSION['openenterprise_apps_installed']) {
     $output = '<h2>' . st('Congratulations, you installed @drupal!', array('@drupal' => drupal_install_profile_distribution_name())) . '</h2>';
     $output .= '<p>' . st('By not installing any apps, your site is currently a blank. To get started you can either create your own content types, views and set up the site yourself or install some prebuild apps. Apps provide complete bundled functionality that will greatly speed up the process of creating your site.') . '</p>';
     $output .= '<p>' . st('Even after installing apps your site may look very empty before you add some content. To see what it looks like with content, try installing the default content for each of the apps. This can be done on each app\'s configuration page.') . '</p>';

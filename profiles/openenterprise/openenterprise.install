@@ -8,6 +8,7 @@
 function openenterprise_install() {
   openenterprise_enable_theme_settings ();
   openenterprise_add_default_text_formats_and_perms();
+  openenterprise_setup_admin_role();
   openenterprise_create_menus();
   openenterprise_add_default_blocks();
   openenterprise_add_content_types();
@@ -26,206 +27,14 @@ function openenterprise_install() {
 }
 
 function openenterprise_add_default_text_formats_and_perms() {
-  // Add text formats.
-  $filtered_html_format = array(
-    'format' => 'filtered_html',
-    'name' => 'Filtered HTML',
-    'weight' => 0,
-    'filters' => array(
-      // URL filter.
-      'filter_url' => array(
-        'weight' => 0,
-        'status' => 1,
-      ),
-      // HTML filter.
-      'filter_html' => array(
-        'weight' => 1,
-        'status' => 1,
-        'settings' => array(
-          'allowed_html' => '<a> <img> <br> <em> <p> <strong> <cite> <sub> <sup> <span> <blockquote> <code> <ul> <ol> <li> <dl> <dt> <dd> <pre> <address> <h2> <h3> <h4> <h5> <h6>',
-          'filter_html_help' => 1,
-          'filter_html_nofollow' => 0,
-        ),
-      ),
-      // Line break filter.
-      'filter_autop' => array(
-        'weight' => 2,
-        'status' => 1,
-      ),
-      // HTML corrector filter.
-      'filter_htmlcorrector' => array(
-        'weight' => 10,
-        'status' => 1,
-      ),
-    ),
-  );
-  $filtered_html_format = (object) $filtered_html_format;
-  filter_format_save($filtered_html_format);
+  require_once drupal_get_path('profile', 'openenterprise') . '/openenterprise.wysiwyg.inc';
+  openenterprise_wysiwyg_formats();
+}
 
-  $full_html_format = array(
-    'format' => 'full_html',
-    'name' => 'Full HTML',
-    'weight' => 1,
-    'filters' => array(
-      // URL filter.
-      'filter_url' => array(
-        'weight' => 0,
-        'status' => 1,
-      ),
-      // Line break filter.
-      'filter_autop' => array(
-        'weight' => 1,
-        'status' => 1,
-      ),
-      // HTML corrector filter.
-      'filter_htmlcorrector' => array(
-        'weight' => 10,
-        'status' => 1,
-      ),
-    ),
-  );
-  $full_html_format = (object) $full_html_format;
-  filter_format_save($full_html_format);
-
-  // Add wysiwyg editor to filtered and full html formats
-/*  $filtered_html_wysiwyg = array(
-    'format' => 'filtered_html',
-    'editor' => 'ckeditor',
-    'settings' => array(
-      'default' => 1,
-      'user_choose' => 0,
-      'show_toggle' => 1,
-      'theme' => 'advanced',
-      'language' => 'en',
-      'buttons' => array(
-        'default' => array(
-          'Bold' => 1,
-          'Italic' => 1,
-          'BulletedList' => 1,
-          'NumberedList' => 1,
-          'Link' => 1,
-          'Superscript' => 1,
-          'Subscript' => 1,
-          'Image' => 1,
-          'Blockquote' => 1,
-          'Styles' => 1,
-          'Source' => 1,
-          'Cut' => 1,
-          'Copy' => 1,
-          'Paste' => 1,
-          'PasteText' => 1,
-          'PasteFromWord' => 1,
-        )
-      ),
-      'toolbar_loc' => 'top',
-      'toolbar_align' => 'left',
-      'path_loc' => 'bottom',
-      'resizing' => 1,
-      'verify_html' => 1,
-      'preformatted' => 0,
-      'convert_fonts_to_spans' => 1,
-      'remove_linebreaks' => 1,
-      'apply_source_formatting' => 0,
-      'paste_auto_cleanup_on_paste' => 0,
-      'block_formats' => 'p,address,pre,h2,h3,h4,h5,h6,div',
-      'css_setting' => 'theme',
-      'css_path' => '',
-      'css_classes' => '',
-    )
-  );
-  $filtered_html_wysiwyg['settings'] = serialize($filtered_html_wysiwyg['settings']);
-  drupal_write_record('wysiwyg', $filtered_html_wysiwyg);
-
-  $full_html_wysiwyg = array(
-    'format' => 'full_html',
-    'editor' => 'ckeditor',
-    'settings' => array(
-      'default' => 1,
-      'user_choose' => 0,
-      'show_toggle' => 1,
-      'theme' => 'advanced',
-      'language' => 'en',
-      'buttons' => array(
-        'default' => array(
-          'Bold' => 1,
-          'Italic' => 1,
-          'Underline' => 1,
-          'Strike' => 1,
-          'JustifyLeft' => 1,
-          'JustifyCenter' => 1,
-          'JustifyRight' => 1,
-          'JustifyBlock' => 1,
-          'BulletedList' => 1,
-          'NumberedList' => 1,
-          'Outdent' => 1,
-          'Indent' => 1,
-          'Undo' => 1,
-          'Redo' => 1,
-          'Link' => 1,
-          'Unlink' => 1,
-          'Anchor' => 1,
-          'Image' => 1,
-          'TextColor' => 1,
-          'BGColor' => 1,
-          'Superscript' => 1,
-          'Subscript' => 1,
-          'Blockquote' => 1,
-          'Source' => 1,
-          'HorizontalRule' => 1,
-          'Cut' => 1,
-          'Copy' => 1,
-          'Paste' => 1,
-          'PasteText' => 1,
-          'PasteFromWord' => 1,
-          'ShowBlocks' => 1,
-          'RemoveFormat' => 1,
-          'SpecialChar' => 1,
-          'Format' => 1,
-          'Font' => 1,
-          'FontSize' => 1,
-          'Styles' => 1,
-          'Table' => 1,
-          'SelectAll' => 1,
-          'Find' => 1,
-          'Replace' => 1,
-          'Smiley' => 1,
-          'CreateDiv' => 1,
-          'Maximize' => 1,
-          'SpellChecker' => 1,
-          'Scayt' => 1,
-          'About' => 1,
-        ),
-        'imce' => array(
-          'imce' => 1,
-        ),
-        'drupal' => array(
-          'break' => 1,
-        )
-      ),
-      'toolbar_loc' => 'top',
-      'toolbar_align' => 'left',
-      'path_loc' => 'bottom',
-      'resizing' => 1,
-      'verify_html' => 1,
-      'preformatted' => 0,
-      'convert_fonts_to_spans' => 1,
-      'remove_linebreaks' => 1,
-      'apply_source_formatting' => 0,
-      'paste_auto_cleanup_on_paste' => 0,
-      'block_formats' => 'p,address,pre,h2,h3,h4,h5,h6,div',
-      'css_setting' => 'theme',
-      'css_path' => '',
-      'css_classes' => '',
-    )
-  );
-  $full_html_wysiwyg['settings'] = serialize($full_html_wysiwyg['settings']);
-  drupal_write_record('wysiwyg', $full_html_wysiwyg);*/
-
-  // Enable default permissions for system roles.
-  $filtered_html_permission = filter_permission_name($filtered_html_format);
-  user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, array('access content', 'access comments', $filtered_html_permission));
-  user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array('access content', 'access comments', 'post comments', 'skip comment approval', $filtered_html_permission));
-
+/*
+ * Create the admin role
+ */
+function openenterprise_setup_admin_role() {
   // Create a default role for site administrators, with all available permissions assigned.
   $admin_role = new stdClass();
   $admin_role->name = 'administrator';
@@ -239,6 +48,8 @@ function openenterprise_add_default_text_formats_and_perms() {
   db_insert('users_roles')
     ->fields(array('uid' => 1, 'rid' => $admin_role->rid))
     ->execute();
+  // Enable default permissions for system roles.
+  user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array('access content', 'access comments', 'post comments', 'skip comment approval'));  
 }
 
 /**
@@ -423,6 +234,9 @@ function openenterprise_add_content_types() {
     rdf_mapping_save($rdf_mapping);
   }
 
+  require_once drupal_get_path('profile', 'openenterprise') . '/openenterprise.wysiwyg.inc';
+  openenterprise_wysiwyg_create_image_field('page');
+  
   // Default "Basic page" to not be promoted and have comments disabled.
   variable_set('node_options_page', array('status'));
   variable_set('comment_page', COMMENT_NODE_HIDDEN);
@@ -512,4 +326,14 @@ function openenterprise_enable_theme_settings () {
     'favicon_path' => '',
     'favicon_upload' => '',
   ));
+}
+
+/**
+ * Setup WYSIWYG editor for new setup.
+ */
+function openenterprise_update_7100() {
+  module_enable(array('imce_wysiwyg', 'imce', 'wysiwyg', 'wysiwyg_filter', 'better_formats', 'caption_filter', 'insert', 'image_resize_filter', 'filefield_sources'));
+  require_once drupal_get_path('profile', 'openenterprise') . '/openenterprise.wysiwyg.inc';
+  openenterprise_wysiwyg_formats();
+  openenterprise_wysiwyg_create_image_field('page');
 }

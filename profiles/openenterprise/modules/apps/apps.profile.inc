@@ -10,38 +10,38 @@
  * See apps.api.php for use.
  *
  */
-function apps_profile_install_tasks($install_state, $apps_server, $default_apps = array()) {
+function apps_profile_install_tasks($install_state, $apps_server) {
   // Only use apps forms during interactive installs.
   $tasks = array();
   if ($install_state['interactive']) {
-    $_SESSION['apps_defaults'] = $default_apps;
     $_SESSION['apps_server'] = $apps_server;
+    $apps_server_name = $apps_server['machine name'];
     $tasks = array(
-      'apps_profile_apps_select_form_' . $apps_server => array(
+      'apps_profile_apps_select_form_' . $apps_server_name => array(
         'display_name' => st('Install Apps'),
         'type' => 'form',
         'function' => 'apps_profile_apps_select_form',
       ),
-      'apps_profile_download_app_modules_' . $apps_server => array(
+      'apps_profile_download_app_modules_' . $apps_server_name => array(
         'display' => FALSE,
         'type' => 'batch',
         'run' => (isset($_SESSION['apps']))?INSTALL_TASK_RUN_IF_NOT_COMPLETED:INSTALL_TASK_SKIP,
         'function' => 'apps_profile_download_app_modules',
       ),
       // Only need this if using filetransfer authorization.
-      'apps_profile_authorize_transfer_' . $apps_server => array(
+      'apps_profile_authorize_transfer_' . $apps_server_name => array(
         'display' => FALSE,
         'type' => 'form',
         'run' => (!is_writeable(conf_path()) && isset($_SESSION['apps']))?INSTALL_TASK_RUN_IF_NOT_COMPLETED:INSTALL_TASK_SKIP,
         'function' => 'apps_profile_authorize_transfer',
       ),
-      'apps_profile_install_app_modules_' . $apps_server => array(
+      'apps_profile_install_app_modules_' . $apps_server_name => array(
         'display' => FALSE,
         'type' => 'batch',
         'run' => (isset($_SESSION['apps']))?INSTALL_TASK_RUN_IF_NOT_COMPLETED:INSTALL_TASK_SKIP,
         'function' => 'apps_profile_install_app_modules',
       ),
-      'apps_profile_enable_app_modules_' . $apps_server => array(
+      'apps_profile_enable_app_modules_' . $apps_server_name => array(
         'display' => FALSE,
         'run' => (isset($_SESSION['apps']))?INSTALL_TASK_RUN_IF_NOT_COMPLETED:INSTALL_TASK_SKIP,
         'function' => 'apps_profile_enable_app_modules',
@@ -58,7 +58,21 @@ function apps_profile_apps_select_form($form, $form_state, &$install_state) {
   drupal_set_title(t('Install Apps'));
   // Get and cache the apps manifest file.
   apps_include('manifest');
-  $_SESSION['apps_manifest'] = apps_apps($_SESSION['apps_server']);
+
+  // If there is no internet things get in an unfixable state. Use try->catch
+  try {
+    $_SESSION['apps_manifest'] = apps_apps($_SESSION['apps_server']['machine name']);
+  }
+  catch (Exception $e) {
+    $form['info'] = array(
+      '#markup' => t('<h2>Error</h2><p>Unable to connect to Apps Server.</p><p>Click "Continue" to finish the installation. You can either fix your internet connection and try the installation again or install apps later from the apps config page.</p>'),
+    );
+    $form['actions']['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Continue'),
+    );
+    return $form;
+  }
 
   // Set a message if no manifest received.
   if (!isset($_SESSION['apps_manifest'])) {
@@ -85,7 +99,7 @@ function apps_profile_apps_select_form($form, $form_state, &$install_state) {
     $form['apps_fieldset']['apps'] = array(
       '#type' =>'checkboxes',
       '#title' => t('Apps'),
-      '#default_value' => $_SESSION['apps_defaults'],
+      '#default_value' => $_SESSION['apps_server']['default apps'],
       '#options' => $options,
     );
 
@@ -130,7 +144,6 @@ function apps_profile_apps_select_form_submit($form, &$form_state) {
  */
 function apps_profile_download_app_modules(&$install_state) {
   apps_include('installer');
-  $apps = $_SESSION['apps'];
   foreach ($_SESSION['apps'] as $id => $name) {
     $apps[] = $_SESSION['apps_manifest'][$name];
   }
@@ -255,14 +268,19 @@ function apps_profile_install_app_modules(&$install_state) {
  */
 function apps_profile_enable_app_modules(&$install_state) {
   $modules = array_keys($_SESSION['apps']);
+  // Allow profiles to add default content.
   if ($_SESSION['apps_default_content']) {
-    $modules[] = 'enterprise_content';
-    $files = system_rebuild_module_data();
-    foreach($_SESSION['apps'] as $app) {
-      // Should probably check the app to see the proper way to do this.
-      if (isset($files[$app . '_content'])) {
-        $modules[] = $app . '_content';
-      }
+    $function = $_SESSION['apps_server']['default content callback'];
+    if (function_exists($function)) {
+      $function($modules);
+    }
+  }
+  // Do dependency checking so everything doesn't break from one missing dependency.
+  foreach($modules as $id => $module) {
+    if (!apps_profile_check_dependencies(array($module => $module))) {
+      // Something went wrong. Remove from queue and add error.
+      unset($modules[$id]);
+      drupal_set_message(t('There was an error installing @module.', array('@module' => $module)), 'error');
     }
   }
   if (!empty($modules)) {
@@ -276,3 +294,39 @@ function apps_profile_enable_app_modules(&$install_state) {
   unset($_SESSION['apps_manifest']);
 }
 
+/**
+ * Function to check and make sure all dependencies are available. This will stop stray apps
+ * or broken downloads from stopping the install process for everything.
+ * 
+ * Copied from module_enable() in module.inc
+ */
+function apps_profile_check_dependencies($module_list) {
+  // Get all module data so we can find dependencies and sort.
+  $module_data = system_rebuild_module_data();
+  // Create an associative array with weights as values.
+  $module_list = array_flip(array_values($module_list));
+
+  while (list($module) = each($module_list)) {
+    if (!isset($module_data[$module])) {
+      // This module is not found in the filesystem, abort.
+      return FALSE;
+    }
+    if ($module_data[$module]->status) {
+      // Skip already enabled modules.
+      unset($module_list[$module]);
+      continue;
+    }
+    $module_list[$module] = $module_data[$module]->sort;
+
+    // Add dependencies to the list, with a placeholder weight.
+    // The new modules will be processed as the while loop continues.
+    foreach (array_keys($module_data[$module]->requires) as $dependency) {
+      if (!isset($module_list[$dependency])) {
+        $module_list[$dependency] = 0;
+      }
+    }
+  }
+  
+  // If we make it this far then everything is good.
+  return TRUE;
+}

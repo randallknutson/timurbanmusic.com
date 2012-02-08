@@ -2,7 +2,7 @@ name = OpenEnterprise
 description = OpenEnterprise Distribution by LevelTen Interactive
 distribution_name = OpenEnterprise
 
-version = 7.x-1.0-BETA1
+version = 7.x-1.0-beta4
 core = 7.x
 
 ; Core
@@ -21,7 +21,6 @@ dependencies[] = taxonomy
 dependencies[] = syslog
 dependencies[] = search
 dependencies[] = shortcut
-dependencies[] = toolbar
 dependencies[] = overlay
 dependencies[] = field
 dependencies[] = field_ui
@@ -48,24 +47,29 @@ dependencies[] = redirect
 dependencies[] = transliteration
 
 ;; Text Editor
-dependencies[] = htmlpurifier
 dependencies[] = imce_wysiwyg
 dependencies[] = imce
 dependencies[] = wysiwyg
-dependencies[] = bueditor
-dependencies[] = ajax_markup
+dependencies[] = wysiwyg_filter
+;; No D7 release yet.
+;dependencies[] = better_formats
+dependencies[] = caption_filter
+dependencies[] = insert
+dependencies[] = image_resize_filter
+dependencies[] = filefield_sources
 
 ;; UX Enhancements
 dependencies[] = backports
 dependencies[] = block_visibility
+dependencies[] = elements
 dependencies[] = nodeconnect
 dependencies[] = simplified_menu_admin
-dependencies[] = ux_elements
 
 ;; Sitebuilding Tools
+dependencies[] = admin_menu
+dependencies[] = admin_menu_toolbar
 dependencies[] = apps
 dependencies[] = backup_migrate
-dependencies[] = boxes
 dependencies[] = ctools
 dependencies[] = defaultcontent
 dependencies[] = email_registration
@@ -74,12 +78,25 @@ dependencies[] = entitycache
 dependencies[] = features
 dependencies[] = libraries
 dependencies[] = menu_block
+dependencies[] = page_manager
+dependencies[] = panels
 dependencies[] = strongarm
 dependencies[] = token
+dependencies[] = total_control
 dependencies[] = views
+dependencies[] = views_content
 dependencies[] = views_ui
 
 ;; Custom
 ;dependencies[] = tutorials
 
 files[] = openenterprise.profile
+
+;; Include WYSIWYG stylesheet
+stylesheets[all][] = wysiwyg_align.css
+; Information added by drupal.org packaging script on 2012-02-08
+version = "7.x-1.0-beta6"
+core = "7.x"
+project = "openenterprise"
+datestamp = "1328662846"
+
