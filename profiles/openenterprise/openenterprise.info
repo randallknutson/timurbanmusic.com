@@ -2,9 +2,6 @@ name = OpenEnterprise
 description = OpenEnterprise Distribution by LevelTen Interactive
 distribution_name = OpenEnterprise
 
-version = 7.x-1.0-beta4
-core = 7.x
-
 ; Core
 dependencies[] = block
 dependencies[] = comment
@@ -62,6 +59,7 @@ dependencies[] = filefield_sources
 dependencies[] = backports
 dependencies[] = block_visibility
 dependencies[] = elements
+dependencies[] = navigation404
 dependencies[] = nodeconnect
 dependencies[] = simplified_menu_admin
 
@@ -86,6 +84,7 @@ dependencies[] = total_control
 dependencies[] = views
 dependencies[] = views_content
 dependencies[] = views_ui
+dependencies[] = views_bulk_operations
 
 ;; Custom
 ;dependencies[] = tutorials
@@ -94,9 +93,3 @@ files[] = openenterprise.profile
 
 ;; Include WYSIWYG stylesheet
 stylesheets[all][] = wysiwyg_align.css
-; Information added by drupal.org packaging script on 2012-02-08
-version = "7.x-1.0-beta6"
-core = "7.x"
-project = "openenterprise"
-datestamp = "1328662846"
-

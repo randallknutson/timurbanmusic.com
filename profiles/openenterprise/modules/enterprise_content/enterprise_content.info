@@ -21,10 +21,3 @@ features[menu_links][] = "menu-social:http://www.youtube.com"
 name = "OpenEnterprise Content"
 package = "Other"
 php = "5.2.4"
-
-; Information added by drupal.org packaging script on 2012-02-08
-version = "7.x-1.0-beta6"
-core = "7.x"
-project = "openenterprise"
-datestamp = "1328662846"
-

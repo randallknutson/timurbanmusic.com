@@ -42,8 +42,9 @@ Drupal.omega = Drupal.omega || {};
   /**
    * @todo
    */
-  Drupal.omega.crappyBrowser = function () {
-    return $.browser.msie && parseInt($.browser.version, 10) < 9;
+  Drupal.omega.crappyBrowser = function (minVersion) {
+    minVersion = minVersion || 9;
+    return $.browser.msie && parseInt($.browser.version, 10) < minVersion;
   };
   
   /**
@@ -103,7 +104,13 @@ Drupal.omega = Drupal.omega || {};
         }
 
         $(window).bind('resize.omegamediaqueries', function () {
-          setCurrentLayout(dummy.css('z-index'));
+          if (Drupal.omega.crappyBrowser(8)) {
+            // IE 7 always returns -1 for the z-index even if it's 0
+            setCurrentLayout(0);
+          }
+          else {      
+            setCurrentLayout(dummy.css('z-index'));
+          }
         }).load(function () {
           $(this).trigger('resize.omegamediaqueries');
         });

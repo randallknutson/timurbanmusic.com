@@ -147,8 +147,7 @@ function apps_client_id() {
  * TODO: Handle lack of server presense OPIC-374
  */
 function apps_request_manifest($server) { 
-  //$manifest_cache = cache_get("apps_manifest_{$server['name']}");
-  $manifest_cache = false;
+  $manifest_cache = cache_get("apps_manifest_{$server['name']}");
   $manifest = $manifest_cache ? $manifest_cache->data : FALSE;
 
   if(!$manifest) {
@@ -180,7 +179,7 @@ function apps_request_manifest($server) {
       // add any local apps
       //$manifest['apps'] = $manifest['apps'] + $apps;
       apps_request_manifest_image_process($manifest);
-      cache_set("apps_manifest_{$server['name']}", $manifest, 'cache', time() + 60 +30);
+      cache_set("apps_manifest_{$server['name']}", $manifest, 'cache', REQUEST_TIME + 60 * 60 * 24);
     }
     else {
       $manifest = array(
