@@ -235,16 +235,14 @@ ul.tabs li {
 
 /* Custom Global Styles */
 body {
-  background: #001B2C url("../img/bg-page.jpg") repeat-x top left ;
+  background: #000;
 }
 #page {
-  background: url("../img/bg-page-splash.jpg") no-repeat scroll center top transparent;
   min-height: 800px;
 }
 
 .zone-branding {
   padding-top: 10px;
-  padding-bottom: 10px;
 }
 .zone-header,
 .zone-preface,
@@ -275,8 +273,9 @@ img.photo {
 }
 /* site title */
 .site-name-slogan .site-name {
-  font-family: Palatino,"Times New Roman",serif;
-  font-size: 4.6em;
+  font-family: helvetica, arial,sans-serif;
+  text-transform:lowercase;
+  font-size: 7em;
   font-weight: normal;
   letter-spacing: -0.04em;
 }
@@ -288,6 +287,10 @@ img.photo {
   font-weight: normal;
   padding: 5px 0 0;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.site-name .lastname {
+  font-family: arial black, sans-serif;
 }
 
 /*
@@ -523,6 +526,7 @@ h1#page-title {
 #block-openpublic-defaults-openpublic-footer-utility-menu,
 #combinedblock,
 .block-messages,
+#block-block-1,
 .block-delta-blocks-messages {
 	background:none;
 	padding:0;
@@ -534,6 +538,42 @@ h1#page-title {
 }
 #block-addthis-addthis h2.block-title {
 	display:none;
+}
+
+/*
+ * Set styles for branding region blocks.
+ */
+#region-branding .block {
+	background:none;
+	padding:0;
+	margin:0 0 -1px;
+	border-top:none;
+  color: #FFF;
+}
+
+#region-branding .block a,
+#region-branding .block a:visited,
+#region-branding .block label {
+  color: #FFF;
+}
+
+#block-follow-site {
+  width: 200px;
+  float: right;
+}
+
+#block-follow-site h2 {
+  display: none;
+}
+
+#region-branding #block-block-2 {
+  width: 200px;
+  padding-top: 10px;
+  float: right;
+}
+
+#block-block-4 {
+  padding: 0px;
 }
 
 /*
@@ -1004,7 +1044,6 @@ form#search-block-form input.form-submit {
 
 
 .zone-footer {
-  background: url(../img/bg-footer.png) no-repeat;
   min-height: 200px;
 }
 #footer-logo-subscribe .logo{
@@ -1014,7 +1053,8 @@ form#search-block-form input.form-submit {
 }
 
 #footer-logo-subscribe .site-name{
-	font-family: "Palatino Linotype", "Book Antiqua3", Palatino, serif;
+	font-family: arial, helvetica, sans-serif;
+  text-transform: lowercase;
   font-weight: normal;
   padding: 0 0 12px 8px;
   text-shadow:0 2px 2px rgba(0,0,0,0.6);

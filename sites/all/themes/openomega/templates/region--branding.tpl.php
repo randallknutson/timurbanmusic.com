@@ -1,7 +1,7 @@
 <div<?php print $attributes; ?>>
   <div<?php print $content_attributes; ?>>
     <?php if ($linked_logo_img || $site_name || $site_slogan): ?>
-    <div class="branding-data clearfix">
+    <div class="branding-data">
       <?php if ($linked_logo_img): ?>
       <div class="logo-img">
         <?php print $linked_logo_img; ?>
@@ -12,7 +12,7 @@
       <hgroup class="site-name-slogan<?php print $class; ?>">        
         <?php if ($site_name): ?>
         <?php $class = $site_name_hidden ? ' element-invisible' : ''; ?>
-        <h1 class="site-name<?php print $class; ?>"><?php print $linked_site_name; ?></h1>
+        <h1 class="site-name<?php print $class; ?>"><a title="Home" href="/">Tim<span class="lastname">Urban</span></a></h1>
         <?php endif; ?>
         <?php if ($site_slogan): ?>
         <?php $class = $site_slogan_hidden ? ' element-invisible' : ''; ?>
