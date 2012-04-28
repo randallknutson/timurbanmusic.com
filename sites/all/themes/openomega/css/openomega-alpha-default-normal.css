@@ -2,15 +2,6 @@
 
 
 
-/*
- * Page backgrounds
- */
-body.not-front #zone-content,
-body.not-front #zone-preface {
-  background:url("../img/bg-page-inner.jpg") repeat-y scroll -15px 0 #FFFFFF
-}
-
-
 
 .breaking-news span.read-more {
   display:block;
