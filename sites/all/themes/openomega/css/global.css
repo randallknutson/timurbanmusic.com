@@ -573,8 +573,13 @@ h1#page-title {
   float: right;
 }
 
+#block-block-3 {
+  background: none;
+}
+
 #block-block-4 {
   padding: 0px;
+  background: none;
 }
 
 /*
