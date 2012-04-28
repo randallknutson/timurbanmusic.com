@@ -275,7 +275,7 @@ img.photo {
 .site-name-slogan .site-name {
   font-family: helvetica, arial,sans-serif;
   text-transform:lowercase;
-  font-size: 7em;
+  font-size: 8em;
   font-weight: normal;
   letter-spacing: -0.04em;
 }
@@ -543,10 +543,11 @@ h1#page-title {
 /*
  * Set styles for branding region blocks.
  */
-#region-branding .block {
+#region-branding .block,
+#zone-footer .block {
 	background:none;
 	padding:0;
-	margin:0 0 -1px;
+	margin:0;
 	border-top:none;
   color: #FFF;
 }
