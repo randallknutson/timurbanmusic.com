@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Enterprise Music feature.
+ */
+
+include_once('enterprise_music.features.inc');
