@@ -562,7 +562,7 @@ h1#page-title {
 }
 
 #block-follow-site {
-  width: 200px;
+  width: 150px;
   float: right;
 }
 
@@ -583,6 +583,8 @@ h1#page-title {
 #block-block-4 {
   padding: 0px;
   background: none;
+  overflow: hidden;
+  width: 300px;
 }
 
 /*
@@ -830,7 +832,7 @@ form#search-block-form input.form-submit {
 
 /* navigation */
 #region-menu {
-  display: none;
+  display: block;
   width: 100%;
   margin: 0;
 }
@@ -840,7 +842,7 @@ form#search-block-form input.form-submit {
   position: relative;
 }
 
-.navigation ul {
+.navigation ul{
   background: #d1d1d1; 
 	background: -moz-linear-gradient(top, #f2f2f2 0%, #d1d1d1 100%);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f2f2f2), color-stop(100%,#d1d1d1));
@@ -849,21 +851,18 @@ form#search-block-form input.form-submit {
 	background: -ms-linear-gradient(top, #f2f2f2 0%,#d1d1d1 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f2f2', endColorstr='#d1d1d1',GradientType=0 );
 	background: linear-gradient(top, #f2f2f2 0%,#d1d1d1 100%);
-	/*height: 50px;*/
-	position: relative;
-	display: block;
-	margin: 0;
-}
-.navigation ul li {
-  float: left;
-  font-size: 1.25em;
-  font-weight: 700;
+  width: 100%;
   list-style-type: none;
-  list-style-image: none;
   margin: 0;
   padding: 0;
-  position: relative;
-  text-transform: uppercase;
+}
+
+.navigation ul li {
+  font-size: 1.25em;
+  font-weight: 700;
+  display: inline;
+  float: left;
+  width: 29%;
 }
 .navigation li a {
   color: #666666;
@@ -891,7 +890,6 @@ form#search-block-form input.form-submit {
 	padding-right: 19px;
 	color: #333;
 }
-
 /******* Drop-down Navigation ******/
 
 .navigation li ul {

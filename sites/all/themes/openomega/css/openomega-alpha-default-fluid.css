@@ -5,6 +5,9 @@
   padding: 10px 0 0;
   width: 380px;
 }
+#block-follow-site {
+  width: 200px;
+}
 .logo-img {
   float: left;
   text-align:left;
@@ -78,4 +81,78 @@
   text-transform: uppercase;
   float:none;
   display: block;
+}
+
+#navigation {
+  overflow: hidden;
+  position: relative;
+}
+
+.navigation ul {
+	/*height: 50px;*/
+	position: relative;
+	display: block;
+	margin: 0;
+}
+.navigation ul li {
+  float: left;
+  font-size: 1.25em;
+  font-weight: 700;
+  list-style-type: none;
+  list-style-image: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  text-transform: uppercase;
+  width: auto;
+}
+
+/******* Drop-down Navigation ******/
+
+.navigation li ul {
+	background: #FFF;
+	margin: 0;
+	padding: 5px;
+	width: 200px;
+	height: auto;
+	position: absolute;
+	left: -999em;
+	z-index: 1000;
+	-webkit-box-shadow: 0 3px 10px rgba(0,0,0,.8);
+	-moz-box-shadow: 0 3px 10px rgba(0,0,0,.8);
+	box-shadow: 0 3px 10px rgba(0,0,0,.2);
+}
+
+.navigation ul li:hover > ul {
+	display: block;
+	left: 0;
+}
+
+.navigation li ul li {
+	float: none;
+	margin: 0;
+	padding: 0;
+	text-transform: none;
+	font-weight: 400;
+	font-size: 12px;
+	list-style-image: none;
+}
+
+.navigation li ul li a,
+.navigation li.active-trail ul li a,
+.navigation li:hover ul li a {
+	text-align: left;
+	background: url(../img/sprite.png) repeat-x 0 -490px;
+	color: #484848;
+	display: block;
+	padding: 9px 16px 9px 16px;
+	border: none;
+}
+
+.navigation li ul li a:hover,
+.navigation li.active-trail ul li a.active {
+	background: #3fa3ca url(../img/sprite.png) repeat-x 0 -543px;
+	color: #FFF;
+	padding: 9px 16px 9px 16px;
+	border: none;
 }
