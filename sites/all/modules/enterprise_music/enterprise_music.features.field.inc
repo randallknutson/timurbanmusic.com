@@ -216,7 +216,7 @@ function enterprise_music_field_default_fields() {
       'settings' => array(
         'display_default' => 0,
         'display_field' => 0,
-        'uri_scheme' => 'public',
+        'uri_scheme' => 'private',
       ),
       'translatable' => '0',
       'type' => 'file',
@@ -243,12 +243,12 @@ function enterprise_music_field_default_fields() {
       'enterprise_edit_form_display' => '',
       'entity_type' => 'node',
       'field_name' => 'field_song_file',
-      'label' => 'File',
+      'label' => 'Download',
       'required' => 0,
       'settings' => array(
         'description_field' => 0,
         'file_directory' => '',
-        'file_extensions' => 'mp3 mp4 mpeg',
+        'file_extensions' => 'mp3',
         'max_filesize' => '',
         'user_register_form' => FALSE,
       ),
@@ -297,7 +297,7 @@ function enterprise_music_field_default_fields() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Body');
-  t('File');
+  t('Download');
   t('Image');
 
   return $fields;
