@@ -10,6 +10,9 @@
   text-align:left;
   margin-right: 20px;
 }
+.site-name-slogan .site-name {
+  font-size: 8em;
+}
 .site-name-slogan {
   float: left;
   text-align: left;

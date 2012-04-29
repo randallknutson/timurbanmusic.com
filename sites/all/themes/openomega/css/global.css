@@ -275,7 +275,7 @@ img.photo {
 .site-name-slogan .site-name {
   font-family: helvetica, arial,sans-serif;
   text-transform:lowercase;
-  font-size: 8em;
+  font-size: 5em;
   font-weight: normal;
   letter-spacing: -0.04em;
 }
@@ -1391,10 +1391,10 @@ div.node div.field-name-field-resource-photo {
 /* Small download button */
 div.download-link a, span.file a {
     background: url("../img/download-btn-icon.png") no-repeat scroll right top transparent;
-    color: #ffffff;
+    color: #000;
     font-size: 16px;
     font-weight: bolder;
-    padding: 2px 30px 0 0;
+    padding: 4px 30px 0 0;
 }
 .view-id-documents .download-link {
 	background:url(../img/download-btn-small-bg.png) repeat-x;
