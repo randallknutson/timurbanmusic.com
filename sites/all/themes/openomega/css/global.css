@@ -13,6 +13,9 @@ font-size: 2em;      12px x 2       = 24px
 */
 
 /************ Basic styles used in many places across the site *************/
+img {
+  max-width: 100%;
+}
 
 /** Accessible hidden/visible styles **/
 .element-hidden {
