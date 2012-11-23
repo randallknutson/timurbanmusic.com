@@ -37,7 +37,8 @@ Drupal.optionsElement = function(element) {
   this.keyType = element.className.replace(/^.*?options-key-type-([a-z]+).*?$/, '$1');
   this.customKeys = Boolean(element.className.match(/options-key-custom/));
   this.identifier = this.manualOptionsElement.id + '-widget';
-  this.enabled = $(this.manualOptionsElement).attr('readonly') == '';
+  // jQuery 1.6 API change: http://api.jquery.com/prop/
+  this.enabled = $.fn.prop ? !$(this.manualOptionsElement).prop('readonly') : !$(this.manualOptionsElement).attr('readonly');
   this.defaultValuePattern = $(element).find('input.default-value-pattern').val();
 
   if (this.defaultValuePattern) {
@@ -57,7 +58,8 @@ Drupal.optionsElement = function(element) {
 
   // Enable add item link.
   $(this.optionAddElement).find('a').click(function() {
-    self.addOption($('table tr:last', self.optionsElement).get(0));
+    var newOption = self.addOption($('table tr:last', self.optionsElement).get(0));
+    $(newOption).find('input[type=text]:visible:first').focus();
     return false;
   });
 
@@ -165,7 +167,7 @@ Drupal.optionsElement.prototype.updateWidgetElements = function() {
   // Enable button for adding options.
   $('a.add', this.optionsElement).click(function() {
     var newOption = self.addOption($(this).parents('tr:first').get(0));
-    $(newOption).find('a.add').focus();
+    $(newOption).find('input[type=text]:visible:first').focus();
     return false;
   });
 
@@ -364,7 +366,7 @@ Drupal.optionsElement.prototype.addOption = function(currentOption) {
   // Enable button for adding options.
   $('a.add', newOption).click(function() {
     var newOption = self.addOption($(this).parents('tr:first').get(0));
-    $(newOption).find('a.add').focus();
+    $(newOption).find('input[type=text]:visible:first').focus();
     return false;
   });
 

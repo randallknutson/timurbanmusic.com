@@ -133,13 +133,13 @@ function _form_options_expand($element) {
       '#rows' => 5,
       '#required' => isset($element['#required']) ? $element['#required'] : FALSE,
       '#description' => t('List options one option per line.'),
-      '#attributes' => $element['#disabled'] ? array('readonly' => 'readonly') : array(),
+      '#attributes' => $element['#options_readonly'] ? array('readonly' => 'readonly') : array(),
       '#wysiwyg' => FALSE, // Prevent CKeditor from trying to hijack.
     );
 
     // If validation fails, reload the user's text even if it's not valid.
-    if (isset($element['#value']['text'])) {
-      $element['options_field']['#value'] = $element['#value']['text'];
+    if (isset($element['#value']['options_text'])) {
+      $element['options_field']['#value'] = $element['#value']['options_text'];
     }
     // Most of the time, we'll be converting the options array into the text.
     else {
@@ -195,7 +195,8 @@ function _form_options_expand($element) {
  * @see form_options_validate()
  */
 function _form_options_validate($element, &$form_state) {
-  // Convert text to an array of options.
+  // Even though we already have the converted options in #value['options'], run
+  // the conversion again to check for duplicates in the user-defined list.
   $duplicates = array();
   $options = form_options_from_text($element['#value']['options_text'], $element['#key_type'], empty($element['#optgroups']), $duplicates);
 
@@ -290,12 +291,17 @@ function _form_type_options_value(&$element, $edit = FALSE) {
       $default_value = NULL;
     }
 
-    return array(
+    $return = array(
       'options' => $options,
       'default_value' => $default_value,
       'options_text' => $edit['options_field'],
-      'default_value_text' => $edit['default_value_field'],
     );
+
+    if (isset($edit['default_value_field'])) {
+      $return['default_value_text'] = $edit['default_value_field'];
+    }
+
+    return $return;
   }
 }
 
@@ -390,7 +396,13 @@ function _form_options_from_text($text, $key_type, $flat = FALSE, &$duplicates =
 
   // Expand the list into a nested array, assign keys and check duplicates.
   $options = array();
-  $new_key = 0;
+  $new_key = 1;
+  foreach ($items as $item) {
+    $int_key = $item['key'] * 1;
+    if (is_int($int_key)) {
+      $new_key = max($int_key, $new_key);
+    }
+  }
   foreach ($items as $item) {
     // Assign a key if needed.
     if ($key_type == 'none') {

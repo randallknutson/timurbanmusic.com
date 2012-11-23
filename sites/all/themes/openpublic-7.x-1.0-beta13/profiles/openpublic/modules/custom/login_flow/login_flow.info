@@ -1,0 +1,12 @@
+name = Login Flow
+description = Modifies the Login Sequence to have two steps and a temporary ban
+core = 7.x
+files[] = login_flow.module
+
+
+; Information added by drupal.org packaging script on 2012-11-14
+version = "7.x-1.0-beta13"
+core = "7.x"
+project = "openpublic"
+datestamp = "1352859002"
+
