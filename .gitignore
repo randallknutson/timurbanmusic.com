@@ -1,4 +1,5 @@
 # Ignore paths that contain user-generated content.
+/sites/default/local.settings.php
 /sites/*/files
 /sites/*/private
 /files/*
@@ -36,7 +37,9 @@ Thumbs.db
 # Vim generated files #
 ######################
 *.un~
+*~
 
 # SASS #
 ##########
 .sass-cache
+/nbproject/
